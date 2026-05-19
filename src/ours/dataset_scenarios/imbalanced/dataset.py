@@ -1,7 +1,7 @@
 """Ours dataset module."""
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Literal, Optional
 import pandas as pd
 from ours.dataset_scenarios import scenario
 
@@ -48,6 +48,7 @@ def load_and_filter(config: DatasetConfig) -> pd.DataFrame:
     if config.mac_filter:
         df = df[(df['HW_dst'] == config.mac_filter) | (df['Hw_src'] == config.mac_filter)]
     df.insert(7, "Is_malicious", 1 if config.is_malicious else 0)
+    assert isinstance(df,pd.DataFrame)
     return df
 
 def get_data() -> dict[int, pd.DataFrame]:
@@ -76,7 +77,7 @@ _SCENARIO_CONFIGS = {
 class Scenario(scenario.Scenario):
     cols_to_remove = ["Hw_src","HW_dst"]
     
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: Literal["laptop","raspberry","server","timely", "timely_oversampling","webos"]) -> None:
         if name not in _SCENARIO_CONFIGS:
             raise ValueError(f"Unknown scenario: {name}")
 
